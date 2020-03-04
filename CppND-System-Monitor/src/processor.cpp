@@ -1,6 +1,7 @@
-#include <string>
 #include <unistd.h>
+#include <string>
 #include <vector>
+#include <thread>
 
 #include "linux_parser.h"
 #include "processor.h"
@@ -10,15 +11,10 @@ using std::string;
 using std::vector;
 
 float Processor::Utilization() {
-    vector<string> cpu = LinuxParser::CpuUtilization();
-    long totalTime = 0;
-    long idle = stol(cpu[LinuxParser::CPUStates::kIdle_]) + stol(cpu[LinuxParser::CPUStates::kIOwait_]);
-    for(unsigned int i=0; i<cpu.size(); i++) {
-        if(i == LinuxParser::CPUStates::kGuest_ || i == LinuxParser::CPUStates::kGuestNice_) {
-            totalTime -= stol(cpu[i]);
-        } else {
-            totalTime += stol(cpu[i]);
-        }
-    }
-    return (float)(totalTime - idle)/totalTime;
+  long prevTotalTime = LinuxParser::Jiffies();
+  long prevIdle = LinuxParser::IdleJiffies();
+  std::this_thread::sleep_for (std::chrono::seconds(1));
+  long totalTime = LinuxParser::Jiffies() - prevTotalTime;
+  long idle = LinuxParser::IdleJiffies() - prevIdle;
+  return (float)(totalTime-idle) / (float)totalTime;
 }
