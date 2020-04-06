@@ -14,7 +14,7 @@ ChatBot::ChatBot()
     // invalidate data handles
     _image = nullptr;
     _chatLogic = nullptr;
-    _rootNode = nullptr;
+    _rootNode.reset();
 }
 
 // constructor WITH memory allocation
@@ -24,7 +24,7 @@ ChatBot::ChatBot(std::string filename)
     
     // invalidate data handles
     _chatLogic = nullptr;
-    _rootNode = nullptr;
+    _rootNode.reset();
 
     // load image into heap memory
     _image = new wxBitmap(filename, wxBITMAP_TYPE_PNG);
@@ -44,7 +44,69 @@ ChatBot::~ChatBot()
 
 //// STUDENT CODE
 ////
+ChatBot::ChatBot(const ChatBot &source)
+{
+    std::cout << "ChatBot Copy Constructor" << std::endl;
 
+    _chatLogic = source._chatLogic;
+    _rootNode = source._rootNode;
+    _currentNode = source._currentNode;
+
+    // Deep copy _image
+    _image = new wxBitmap(*source._image);
+}
+
+ChatBot & ChatBot::operator=(const ChatBot &source)
+{
+    std::cout << "ChatBot Copy Operator" << std::endl;
+
+    if (this == &source)
+        return *this;
+
+    _chatLogic = source._chatLogic;
+    _rootNode = source._rootNode;
+    _currentNode = source._currentNode;
+
+    // Deep copy _image
+    _image = new wxBitmap(*source._image);
+}
+
+ChatBot::ChatBot(ChatBot &&source)
+{
+    std::cout << "ChatBot Move Constructor" << std::endl;
+
+    _chatLogic = source._chatLogic;
+    _rootNode = source._rootNode;
+    _currentNode = source._currentNode;
+    // Deep copy _image
+    _image = new wxBitmap(*source._image);
+
+    // Null out source object
+    source._chatLogic = nullptr;
+    source._rootNode.reset();
+    source._currentNode.reset();
+    delete source._image;
+}
+
+ChatBot & ChatBot::operator=(ChatBot &&source)
+{
+    std::cout << "ChatBot Move Operator" << std::endl;
+
+    if (this == &source)
+        return *this;
+
+    _chatLogic = source._chatLogic;
+    _rootNode = source._rootNode;
+    _currentNode = source._currentNode;
+    // Deep copy _image
+    _image = new wxBitmap(*source._image);
+
+    // Null out source object
+    source._chatLogic = nullptr;
+    source._rootNode.reset();
+    source._currentNode.reset();
+    delete source._image;
+}
 ////
 //// EOF STUDENT CODE
 
@@ -54,9 +116,11 @@ void ChatBot::ReceiveMessageFromUser(std::string message)
     typedef std::pair<GraphEdge *, int> EdgeDist;
     std::vector<EdgeDist> levDists; // format is <ptr,levDist>
 
-    for (size_t i = 0; i < _currentNode->GetNumberOfChildEdges(); ++i)
+    std::shared_ptr<GraphNode> curNode = _currentNode.lock();
+
+    for (size_t i = 0; i < curNode->GetNumberOfChildEdges(); ++i)
     {
-        GraphEdge *edge = _currentNode->GetChildEdgeAtIndex(i);
+        GraphEdge *edge = curNode->GetChildEdgeAtIndex(i);
         for (auto keyword : edge->GetKeywords())
         {
             EdgeDist ed{edge, ComputeLevenshteinDistance(keyword, message)};
@@ -65,7 +129,7 @@ void ChatBot::ReceiveMessageFromUser(std::string message)
     }
 
     // select best fitting edge to proceed along
-    GraphNode *newNode;
+    std::weak_ptr<GraphNode> newNode;
     if (levDists.size() > 0)
     {
         // sort in ascending order of Levenshtein distance (best fit is at the top)
@@ -79,16 +143,20 @@ void ChatBot::ReceiveMessageFromUser(std::string message)
     }
 
     // tell current node to move chatbot to new node
-    _currentNode->MoveChatbotToNewNode(newNode);
+    curNode->MoveChatbotToNewNode(newNode);
 }
 
 void ChatBot::SetCurrentNode(GraphNode *node)
 {
     // update pointer to current node
-    _currentNode = node;
+    int id = node->GetID();
+    std::vector<std::shared_ptr<GraphNode>> nodes = _chatLogic->GetNodes();
+    auto currentNode = std::find_if(nodes.begin(), nodes.end(), [&id](const std::shared_ptr<GraphNode> &node) { return node.get()->GetID() == id; });
+
+    _currentNode = *currentNode;
 
     // select a random node answer (if several answers should exist)
-    std::vector<std::string> answers = _currentNode->GetAnswers();
+    std::vector<std::string> answers = (*currentNode)->GetAnswers();
     std::mt19937 generator(int(std::time(0)));
     std::uniform_int_distribution<int> dis(0, answers.size() - 1);
     std::string answer = answers.at(dis(generator));

@@ -2,6 +2,7 @@
 #define CHATBOT_H_
 
 #include <wx/bitmap.h>
+#include <memory>
 #include <string>
 
 class GraphNode; // forward declaration
@@ -14,8 +15,8 @@ private:
     wxBitmap *_image; // avatar image
 
     // data handles (not owned)
-    GraphNode *_currentNode;
-    GraphNode *_rootNode;
+    std::weak_ptr<GraphNode> _currentNode;
+    std::weak_ptr<GraphNode> _rootNode;
     ChatLogic *_chatLogic;
 
     // proprietary functions
@@ -29,13 +30,16 @@ public:
 
     //// STUDENT CODE
     ////
-
+    ChatBot(const ChatBot &source);
+    ChatBot(ChatBot &&source);
+    ChatBot &operator=(const ChatBot &source);
+    ChatBot &operator=(ChatBot &&source);
     ////
     //// EOF STUDENT CODE
 
     // getters / setters
     void SetCurrentNode(GraphNode *node);
-    void SetRootNode(GraphNode *rootNode) { _rootNode = rootNode; }
+    void SetRootNode(std::weak_ptr<GraphNode> rootNode) { _rootNode = rootNode; }
     void SetChatLogicHandle(ChatLogic *chatLogic) { _chatLogic = chatLogic; }
     wxBitmap *GetImageHandle() { return _image; }
 

@@ -1,6 +1,7 @@
 #ifndef CHATLOGIC_H_
 #define CHATLOGIC_H_
 
+#include <memory>
 #include <vector>
 #include <string>
 #include "chatgui.h"
@@ -17,7 +18,7 @@ private:
     ////
 
     // data handles (owned)
-    std::vector<GraphNode *> _nodes;
+    std::vector<std::shared_ptr<GraphNode>> _nodes;
     std::vector<GraphEdge *> _edges;
 
     ////
@@ -41,6 +42,7 @@ public:
     ~ChatLogic();
 
     // getter / setter
+    std::vector<std::shared_ptr<GraphNode>> GetNodes() { return _nodes; }
     void SetPanelDialogHandle(ChatBotPanelDialog *panelDialog);
     void SetChatbotHandle(ChatBot *chatbot);
 
