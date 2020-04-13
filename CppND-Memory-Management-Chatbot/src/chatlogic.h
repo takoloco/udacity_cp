@@ -14,15 +14,8 @@ class GraphNode;
 class ChatLogic
 {
 private:
-    //// STUDENT CODE
-    ////
-
     // data handles (owned)
-    std::vector<std::shared_ptr<GraphNode>> _nodes;
-    std::vector<GraphEdge *> _edges;
-
-    ////
-    //// EOF STUDENT CODE
+    std::vector<std::unique_ptr<GraphNode>> _nodes;
 
     // data handles (not owned)
     GraphNode *_currentNode;
@@ -42,9 +35,9 @@ public:
     ~ChatLogic();
 
     // getter / setter
-    std::vector<std::shared_ptr<GraphNode>> GetNodes() { return _nodes; }
     void SetPanelDialogHandle(ChatBotPanelDialog *panelDialog);
     void SetChatbotHandle(ChatBot *chatbot);
+    void SetCurrentNode(GraphNode *_currentNode);
 
     // proprietary functions
     void LoadAnswerGraphFromFile(std::string filename);

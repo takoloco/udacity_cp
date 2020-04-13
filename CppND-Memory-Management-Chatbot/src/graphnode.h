@@ -1,10 +1,12 @@
 #ifndef GRAPHNODE_H_
 #define GRAPHNODE_H_
 
+#include <iostream>
 #include <memory>
 #include <vector>
 #include <string>
 #include "chatbot.h"
+#include "chatlogic.h"
 
 
 // forward declarations
@@ -13,18 +15,12 @@ class GraphEdge;
 class GraphNode
 {
 private:
-    //// STUDENT CODE
-    ////
-
     // data handles (owned)
-    std::vector<GraphEdge *> _childEdges;  // edges to subsequent nodes
+    std::vector<std::unique_ptr<GraphEdge>> _childEdges;  // edges to subsequent nodes
+    std::unique_ptr<ChatBot> _chatBot;
 
     // data handles (not owned)
     std::vector<GraphEdge *> _parentEdges; // edges to preceding nodes 
-    ChatBot *_chatBot;
-
-    ////
-    //// EOF STUDENT CODE
 
     // proprietary members
     int _id;
@@ -45,17 +41,12 @@ public:
     // proprietary functions
     void AddToken(std::string token); // add answers to list
     void AddEdgeToParentNode(GraphEdge *edge);
-    void AddEdgeToChildNode(GraphEdge *edge);
+    void AddEdgeToChildNode(std::unique_ptr<GraphEdge> &&edge);
 
-    //// STUDENT CODE
-    ////
-
-    void MoveChatbotHere(ChatBot *chatbot);
-
-    ////
-    //// EOF STUDENT CODE
-
-    void MoveChatbotToNewNode(std::weak_ptr<GraphNode> newNode);
+    void MoveChatbotHere(std::unique_ptr<ChatBot> &&chatbot);
+    wxBitmap *GetImageFromChatbot() { return _chatBot->GetImageHandle(); }
+    
+    void MoveChatbotToNewNode(GraphNode *newNode);
 };
 
 #endif /* GRAPHNODE_H_ */
