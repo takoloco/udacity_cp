@@ -32,7 +32,14 @@ ChatBot::ChatBot(std::string filename)
 
 ChatBot::~ChatBot()
 {
+    std::cout << "COUNT: " << _image.use_count() << std::endl;
     std::cout << "ChatBot Destructor" << std::endl;
+    if(_image != NULL) {
+        if(_image.use_count() == 1) {
+            _image.reset();
+        }
+        _image = NULL;
+    }
 }
 
 ChatBot::ChatBot(const ChatBot &source)
@@ -69,9 +76,8 @@ ChatBot::ChatBot(ChatBot &&source)
     _chatLogic = source._chatLogic;
     _rootNode = source._rootNode;
     _currentNode = source._currentNode;
-    // Deep copy _image
-    _image = std::move(source._image);
-
+    _image = source._image;
+ 
     // Null out source object
     source._chatLogic = nullptr;
     source._rootNode = nullptr;
@@ -89,8 +95,7 @@ ChatBot & ChatBot::operator=(ChatBot &&source)
     _chatLogic = source._chatLogic;
     _rootNode = source._rootNode;
     _currentNode = source._currentNode;
-    // Deep copy _image
-    _image = std::move(source._image);
+    _image = source._image;
 
     // Null out source object
     source._chatLogic = nullptr;
