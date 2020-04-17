@@ -32,10 +32,9 @@ ChatBot::ChatBot(std::string filename)
 
 ChatBot::~ChatBot()
 {
-    std::cout << "COUNT: " << _image.use_count() << std::endl;
     std::cout << "ChatBot Destructor" << std::endl;
     if(_image != NULL) {
-        if(_image.use_count() == 1) {
+        if(_image.use_count() <= 1) {
             _image.reset();
         }
         _image = NULL;

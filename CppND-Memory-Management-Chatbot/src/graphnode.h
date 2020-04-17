@@ -17,7 +17,7 @@ class GraphNode
 private:
     // data handles (owned)
     std::vector<std::unique_ptr<GraphEdge>> _childEdges;  // edges to subsequent nodes
-    std::unique_ptr<ChatBot> _chatBot;
+    ChatBot _chatBot;
 
     // data handles (not owned)
     std::vector<GraphEdge *> _parentEdges; // edges to preceding nodes 
@@ -43,8 +43,8 @@ public:
     void AddEdgeToParentNode(GraphEdge *edge);
     void AddEdgeToChildNode(std::unique_ptr<GraphEdge> &&edge);
 
-    void MoveChatbotHere(std::unique_ptr<ChatBot> &&chatbot);
-    wxBitmap *GetImageFromChatbot() { return _chatBot->GetImageHandle(); }
+    void MoveChatbotHere(ChatBot chatbot);
+    wxBitmap *GetImageFromChatbot() { return _chatBot.GetImageHandle(); }
     
     void MoveChatbotToNewNode(GraphNode *newNode);
 };
