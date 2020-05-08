@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <cmath>
 #include "TrafficLight.h"
 #define SLEEP_FOR_DEFAULT 4
 /* Implementation of class "MessageQueue" */
@@ -57,13 +58,19 @@ void TrafficLight::cycleThroughPhases()
 {
   std::random_device rd;
   std::mt19937 mt(rd());
-  std::uniform_int_distribution<> dist(0, 2);
+  std::uniform_int_distribution<> dist(4, 6);
+  int interval = dist(mt);
+  auto start = std::chrono::high_resolution_clock::now();
   
   while(true) {
-    int sleep_for = SLEEP_FOR_DEFAULT + dist(mt);
-    std::this_thread::sleep_for(std::chrono::seconds(sleep_for));
-    TrafficLightPhase newPhase = (_currentPhase == TrafficLightPhase::red)?TrafficLightPhase::green:TrafficLightPhase::red;
-	_queue.send(std::move(newPhase));
+    std::chrono::duration<double> elapsed = std::chrono::high_resolution_clock::now()-start;
+    if(elapsed.count() >= interval) {
+      TrafficLightPhase newPhase = (_currentPhase == TrafficLightPhase::red)?TrafficLightPhase::green:TrafficLightPhase::red;
+      _currentPhase = newPhase;
+      // std::cout << "Traffic Light #:" << getID() << " turning " << newPhase << std::endl;
+      _queue.send(std::move(newPhase));
+      start = std::chrono::high_resolution_clock::now();
+    }
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
 }
