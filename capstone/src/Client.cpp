@@ -18,8 +18,3 @@ std::string HttpClient::Get(std::string uri)
   error << "HTTP request to " << _host << ":" << _port << " failed with code: " << res->status;
   throw std::runtime_error(error.str());
 }
-
-int main(void)
-{
-  return 0;
-}
