@@ -1,13 +1,14 @@
 #ifndef PLOTTER_H
 #define PLOTTER_H
 
+#include <memory>
+
 #include "EntityData.h"
 
 class Plotter
 {
   public:
-    Plotter();
-    void plot(EntityData* data);
+    void plot(std::shared_ptr<EntityDataCsv<JHUGlobalConfirmedData>> data);
   private:
 };
 
