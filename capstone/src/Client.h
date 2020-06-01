@@ -6,6 +6,12 @@
 #include <httplib.h>
 #include <iostream>
 
+/**
+ * A wrapper class around httplib.
+ *
+ * A wrapper class around cpp-httplib (https://github.com/yhirose/cpp-httplib)
+ * used to communicate with HTTP servers.
+ */
 class HttpClient
 {
 public:

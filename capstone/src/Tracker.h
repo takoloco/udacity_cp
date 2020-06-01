@@ -7,17 +7,27 @@
 #include "EntityData.h"
 #include "Plotter.h"
 
+/**
+ * COVID-19 Tracker main class.
+ * 
+ * Main COVID-19 Tracker class which kicks off retrieval of CSV data from JHU
+ * GitHub repo and plots the processed data.
+ */
 class Tracker
 {
 public:
   Tracker();
-  void GetData();
-  void PlotData();
+  template <typename T>
+  std::shared_ptr<EntityDataCsv<T>> GetData(CsvType csv_type);
+  template <typename T2>
+  void PlotData(CsvType csv_type, std::vector<int> display_rows,
+  int row_num, int column_num, int index);
   void Run();
 private:
   HttpClient _client;
-  std::shared_ptr<EntityDataCsv<JHUGlobalConfirmedData>> _csv;
   std::unique_ptr<Plotter> _plotter;
 };
+
+#include "Tracker.tpp"
 
 #endif

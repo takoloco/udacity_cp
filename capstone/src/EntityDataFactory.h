@@ -5,14 +5,11 @@
 #include <string>
 #include "EntityData.h"
 
-enum DataSourceType
-{
-  JHUGlobalConfirmed,
-  JHUGlobalDeaths,
-  JHUUSAConfirmed,
-  JHUUSADeaths
-};
-
+/**
+ * Factory class of EntityData and its subclasses.
+ *
+ * Factory class that instanciates and returns EntityData and its subclasses.
+ */
 class EntityDataFactory
 {
   public:
@@ -21,7 +18,7 @@ class EntityDataFactory
     EntityDataFactory(EntityDataFactory const&) = delete;
     void operator=(EntityDataFactory const&) = delete;
     template <class T>
-    std::shared_ptr<T> CreateData(DataSourceType data_source, std::string data)
+    std::shared_ptr<T> CreateData(const std::string &data)
     { return std::make_shared<T>(data); };
   private:
     EntityDataFactory() {};

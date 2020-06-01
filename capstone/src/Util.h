@@ -4,6 +4,12 @@
 #include <string>
 #include <vector>
 
+/**
+ * Utility class.
+ *
+ * Utility class which implements utility methods used across different classes
+ * throughout the application.
+ */
 class Util
 {
   public:
