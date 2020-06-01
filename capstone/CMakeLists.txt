@@ -1,26 +1,35 @@
-cmake_minimum_required(VERSION 3.11.3)
+cmake_minimum_required(VERSION 3.14.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project(COVID_tracker)
 
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-pthread")
-
 set(OPENSSL_USE_STATIC_LIBS TRUE)
+find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(Python 2.7 REQUIRED)
 find_package(PythonLibs REQUIRED)
 find_package (Python2 COMPONENTS Interpreter Development NumPy)
 
-set(CPP_HTTPLIB_DIR "../cpp-httplib")
-set(MATPLOTLIB_CPP_DIR "../matplotlib-cpp")
+
+get_filename_component(PROJECT_ROOT_DIR ${CMAKE_SOURCE_DIR}/../../ ABSOLUTE)
+set(CPP_HTTPLIB_DIR "${PROJECT_ROOT_DIR}/cpp-httplib")
+set(MATPLOTLIB_CPP_DIR "${PROJECT_ROOT_DIR}/matplotlib-cpp")
 set(PYTHON_DIR "/usr/include/python2.7")
 
-include_directories(${CPP_HTTPLIB_DIR} ${MATPLOTLIB_CPP_DIR} ${PYTHON_DIR})
-
-file(GLOB project_SRCS src/*.cpp)
-
-add_executable(covid-tracker ${project_SRCS})
-target_link_libraries(covid-tracker OpenSSL::SSL OpenSSL::Crypto)
-target_link_libraries(covid-tracker ${CMAKE_DL_LIBS})
-target_link_libraries(covid-tracker Python2::Python Python2::NumPy)
+if (EXISTS "${CPP_HTTPLIB_DIR}" AND EXISTS "${MATPLOTLIB_CPP_DIR}")
+	include_directories(${CPP_HTTPLIB_DIR} ${MATPLOTLIB_CPP_DIR} ${PYTHON_DIR})
+	file(GLOB project_SRCS src/*.cpp)
+	add_executable(covid-tracker ${project_SRCS})
+	target_link_libraries(covid-tracker OpenSSL::SSL OpenSSL::Crypto)
+	target_link_libraries(covid-tracker ${CMAKE_DL_LIBS})
+	target_link_libraries(covid-tracker Python2::Python Python2::NumPy)
+	target_link_libraries(covid-tracker ${CMAKE_THREAD_LIBS_INIT})
+else()
+	message("Missing file(s) detected..")
+	if(NOT EXISTS "${CPP_HTTPLIB_DIR}")
+        	message(WARNING "Can't find ${CPP_HTTPLIB_DIR}")
+	elseif(NOT EXISTS "${MATPLOTLIB_CPP_DIR}")
+        	message(WARNING "Can't find ${MATPLOTLIB_CPP_DIR}")
+	endif()
+endif()
