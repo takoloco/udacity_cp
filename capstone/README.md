@@ -1,8 +1,14 @@
 # COVID-19 Tracker
 
+## Overview
+
 This application retrieves latest COVID-19 confirmed cases and deaths timeseries data published by John Hopkins
 University and plots them using
 [Matplotlib](https://github.com/lava/matplotlib-cpp).
+
+## Design
+
+
 
 ## Installation
 
@@ -36,22 +42,6 @@ sudo apt-get install libssl-dev
 Sudo apt-get install python-matplotlib
 sudo apt-get install libpthread-stubs0-dev
 ```
-If system tells you you already have numpy installed but cmake fails to
-recognize it, you may need to remove numpy and try installing again as below
-(obviously be careful before removing in case you have other application 
-dependent on numpy).
-
-```
-sudo apt-get remove python-numpy
-sudo apt-get autoremove
-```
-
-Once the pakcages have been removed, try installing again.
-
-```
-sudo apt install python-numpa
-```
-
 ### Check cmake version
 
 You need `cmake` version **3.14** or later to compile this project. Check the
@@ -65,7 +55,7 @@ cmake -version
 If the version is lower than 3.14, please follow the following steps to
 reinstall `cmake`.
 
-Please download the latest version of cmake from [https://cmake.org/download/].
+Please download the latest version of `cmake` from [https://cmake.org/download/].
 
 Untar the file
 ```
@@ -73,9 +63,9 @@ tar xzf cmake-3.X.Y.tar.gz
 ```
 Move into the cmake directory
 ```
-cd cmake cmake-3.X.Y
+cd cmake-3.X.Y
 ```
-nstall `cmake` (this will take a while)
+Install `cmake` (this will take a while)
 ```
 ./bootstrap && make && sudo make install
 ```
@@ -104,4 +94,32 @@ Build the project!
 ```
 make
 ```
+### Execution
 
+From the `build` directory, run the following command
+
+```
+./covid-tracker
+```
+
+You should see 4 charts in total as below:
+
+![Charts](https://raw.githubusercontent.com/takoloco/udacity_cp/master/images/20200602_scr_covid-tracker_01.png)
+
+### Troubleshooting
+
+If the system tells you that you already have `numpy` installed but `cmake`
+fails to recognize it, you may need to remove `numpy` and try installing again
+as below (obviously be careful before removing in case you have other
+application dependent on numpy).
+
+```
+sudo apt-get remove python-numpy
+sudo apt-get autoremove
+```
+
+Once the pakcages have been removed, try installing again.
+
+```
+sudo apt install python-numpy
+```
