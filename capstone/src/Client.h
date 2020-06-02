@@ -16,7 +16,7 @@ class HttpClient
 {
 public:
     HttpClient(std::string host, int port);
-    std::string Get(std::string uri);
+    std::string Get(const std::string uri);
 private:
     std::string _host;
     int _port;

@@ -27,70 +27,6 @@
 #define START_DATE_USA "3/1/20"
 
 /**
- * Contains data from a single line in a CSV file which represents an entity.
- *
- * Contains data extracted from a single line in a given JHU CSV file which
- * represents an entity (varies depending on the source CSV file) in both raw
- * and parsed formats.
- */
-class EntityData
-{
-  public:
-    EntityData(const std::string &data) : _raw_data(data)
-    {
-      std::vector<std::string> rows;
-      Util::Tokenize(data, rows, ",");
-      _data = rows;
-      _name = rows[0];
-    }
-    std::string GetRawData() { return _raw_data; }
-    std::string GetName() { return _name; }
-    std::vector<std::string> GetData() { return _data; }
-  protected:
-    std::string _raw_data;
-    std::string _name;
-    std::vector<std::string> _data;
-};
-
-/**
- * Child class of Entity Data which contains Global confirmed cases from JHU.
- */
-class JHUGlobalConfirmedData : public EntityData
-{
-  public:
-    JHUGlobalConfirmedData(const std::string &data) : EntityData(data) {}
-};
-
-/**
- * Child class of Entity Data which contains Global death tolls from JHU.
- */
-class JHUGlobalDeathsData : public EntityData
-{
-  public:
-    JHUGlobalDeathsData(const std::string &data) : EntityData(data) {}
-};
-
-/**
- * Child class of Entity Data which contains USA confirmed cases from JHU.
- */
-class JHUUSAConfirmedData : public EntityData
-{
-  public:
-    JHUUSAConfirmedData(const std::string &data) : EntityData(data) { _name =
-    _data[5] + ", " + _data[6]; }
-};
-
-/**
- * Child class of Entity Data which contains USA death tolls from JHU.
- */
-class JHUUSADeathsData : public EntityData
-{
-  public:
-    JHUUSADeathsData(const std::string &data) : EntityData(data) { _name =
-    _data[5] + ", " + _data[6]; }
-};
-
-/**
  * Represents different types of COVID-19 CSV files JHU publishes.
  *
  * Represents different types of COVID-19 time series CSV files John Hopkins
@@ -110,19 +46,50 @@ enum CsvType
 };
 
 /**
+ * Contains data from a single line in a CSV file which represents an entity.
+ *
+ * Contains data extracted from a single line in a given JHU CSV file which
+ * represents an entity (varies depending on the source CSV file) in both raw
+ * and parsed formats.
+ */
+class EntityData
+{
+  public:
+    EntityData(const CsvType type, const std::string &data) : _type(type), _raw_data(data)
+    {
+      std::vector<std::string> rows;
+      Util::Tokenize(data, rows, ",");
+      _data = rows;
+      if(type == CsvType::JHU_USA_CONFIRMED || type == CsvType::JHU_USA_DEATHS)
+      {
+        _name = rows[5] + ", " + rows[6];
+      } else {
+        _name = rows[0];
+      }
+    }
+    std::string GetRawData() { return _raw_data; }
+    std::string GetName() { return _name; }
+    std::vector<std::string> GetData() { return _data; }
+  protected:
+    std::vector<std::string> _data;
+    std::string _name;
+    std::string _raw_data;
+    CsvType _type;
+};
+
+/**
  * Contains data extracted from an entire JHU CSV file.
  *
  * Contains data extracted from an entire JHU CSV file in a form of a vector of
  * EntityData objects as well as additional meta data used in plotting.
  */
-template <class T>
 class EntityDataCsv
 {
   public:
     constexpr static int _ROW_NUMBER_X = 0;
     EntityDataCsv() {}
     EntityDataCsv(CsvType type = CsvType::JHU_GLOBAL_CONFIRMED);
-    EntityDataCsv(std::vector<std::shared_ptr<T>> rows, CsvType type =
+    EntityDataCsv(std::vector<std::shared_ptr<EntityData>> rows, CsvType type =
     CsvType::JHU_GLOBAL_CONFIRMED);
 
     // Getters
@@ -130,8 +97,8 @@ class EntityDataCsv
     std::string GetChartXLabel() { return _chartXLabel; }
     std::string GetChartYLabel() { return _chartYLabel; }
     int GetNumRows() { return _numRows; }
-    std::shared_ptr<T> GetRow(int rowNum) { return _rows[rowNum]; }
-    std::vector<std::shared_ptr<T>> GetRows() { return _rows; }
+    std::shared_ptr<EntityData> GetRow(const int rowNum) { return _rows[rowNum]; }
+    std::vector<std::shared_ptr<EntityData>> GetRows() { return _rows; }
     std::string GetStartDate() { return _startDate; }
     CsvType GetType() { return _type; }
 
@@ -141,22 +108,19 @@ class EntityDataCsv
     void SetXOffset();
 
     // CSV Data Output
-    template <typename T2>
-    std::vector<T2> GetX();
-    template <typename T3>
-    std::vector<T3> GetY(int index);
-    std::vector<std::string> GetY(int index);
+    std::vector<int> GetX();
+    std::vector<std::string> GetXAsString();
+    std::vector<int> GetY(const int index);
+    std::vector<std::string> GetYAsString(const int index);
   protected:
     std::string _chartTitle;
     std::string _chartXLabel;
     std::string _chartYLabel;
     int _numRows = 0;
-    std::vector<std::shared_ptr<T>> _rows;
+    std::vector<std::shared_ptr<EntityData>> _rows;
     std::string _startDate;
     CsvType _type;
     int _xOffset = 0;
 };
-
-#include "EntityData.tpp"
 
 #endif

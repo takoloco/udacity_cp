@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "EntityData.h"
+#include "EntityDataFactory.h"
 
 /**
  * Implements plotting logic using MatPlotlib. 
@@ -16,15 +16,12 @@ class Plotter
 {
   public:
     // Setters
-    void SetSuperTitle(std::string title);
-    void SetSubPlotPosition(int row_num, int column_num, int index);
-
-    template <typename T>
-    void Plot(std::shared_ptr<EntityDataCsv<T>> data, std::vector<int> rows,
-    int row_num, int column_num, int index);
+    void SetSuperTitle(const std::string title);
+    void SetSubPlotPosition(const int row_num, const int column_num,
+    const int index);
+    void Plot(std::vector<std::shared_ptr<EntityDataCsv>> csvs,
+    std::vector<std::vector<int>> rows, int row_num, int column_num);
   private:
 };
-
-#include "Plotter.tpp"
 
 #endif

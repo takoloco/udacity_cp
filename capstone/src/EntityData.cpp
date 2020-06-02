@@ -5,16 +5,15 @@
 #include <sstream>
 #include <vector>
 
+#include "EntityData.h"
 #include "Util.h"
 
-template <class T>
-EntityDataCsv<T>::EntityDataCsv(const CsvType type) : _type(type)
+EntityDataCsv::EntityDataCsv(const CsvType type) : _type(type)
 {
   SetChartParameters(_type);
 }
 
-template <class T>
-EntityDataCsv<T>::EntityDataCsv(std::vector<std::shared_ptr<T>> rows,
+EntityDataCsv::EntityDataCsv(std::vector<std::shared_ptr<EntityData>> rows,
 CsvType type) : _rows(rows), _type(type)
 {
   SetChartParameters(_type);
@@ -30,8 +29,7 @@ CsvType type) : _rows(rows), _type(type)
  *
  * @param type CsvType of the current JHU CSV file.
  */
-template <class T>
-void EntityDataCsv<T>::SetChartParameters(CsvType type)
+void EntityDataCsv::SetChartParameters(const CsvType type)
 {
   switch(_type)
   {
@@ -76,8 +74,7 @@ void EntityDataCsv<T>::SetChartParameters(CsvType type)
  * @throws std::runtime_error Thrown when _startDate is not found in
  * _ROW_NUMBER_X of the CSV file.
  */
-template <class T>
-void EntityDataCsv<T>::SetXOffset()
+void EntityDataCsv::SetXOffset()
 {
   std::vector<std::string> row = _rows[_ROW_NUMBER_X]->GetData();
   auto it = std::find (row.begin(), row.end(), std::string(_startDate));
@@ -90,64 +87,76 @@ void EntityDataCsv<T>::SetXOffset()
 /**
  * Returns X values for plotting..
  *
- * Returns a vector of <T2> to be used as X values in plotting.
+ * Returns a vector of int to be used as X values in plotting.
  *
- * @return x Vector of <T2> to be used as X values in plotting.
+ * @return x Vector of <int> to be used as X values in plotting.
  */
-template <class T>
-template <typename T2>
-std::vector<T2> EntityDataCsv<T>::GetX()
+std::vector<int> EntityDataCsv::GetX()
+{ 
+  std::vector<int> x;
+
+  if(!_xOffset)
+  {
+    SetXOffset();
+  }
+  std::vector<std::string> row = _rows[_ROW_NUMBER_X]->GetData();
+  std::transform(row.begin() + _xOffset, row.end(),
+  std::back_inserter(x), [](const std::string& str)
+  { return std::stoi(str); });
+  return x;
+}
+
+/**
+ * Returns X values for plotting..
+ *
+ * Returns a vector of int to be used as X values in plotting.
+ *
+ * @return x Vector of <int> to be used as X values in plotting.
+ */
+std::vector<std::string> EntityDataCsv::GetXAsString()
 { 
   if(!_xOffset)
   {
     SetXOffset();
   }
-  std::vector<T2> row = _rows[_ROW_NUMBER_X]->GetData();
-  return std::vector<T2>(row.begin() + _xOffset, row.end());
+  std::vector<std::string> row = _rows[_ROW_NUMBER_X]->GetData();
+  return std::vector<std::string>(row.begin() + _xOffset, row.end());
 }
 
 /**
  * Returns Y values for plotting.
  *
- * Returns a vector of <T2> to be used as Y values in plotting.
+ * Returns a vector of int to be used as Y values in plotting.
  * 
- * @tparam T The type of EntityData class stored in EntityDataCsv.
- * @tparam T2 The type of data in which y is to be returned.
  * @param index Row index used in retrieving applicable row data.
- * @return y Vector of <T2> to be used as Y values in plotting.
+ * @return y Vector of int to be used as Y values in plotting.
  */
-template <class T>
-template <typename T2>
-std::vector<T2> EntityDataCsv<T>::GetY(int index)
+std::vector<int> EntityDataCsv::GetY(const int index)
 {
-  std::vector<T2> y;
+  std::vector<int> y;
 
   if(!_xOffset)
   {
     SetXOffset();
   }
 
-  if(index  == _ROW_NUMBER_X) 
+  if(index == _ROW_NUMBER_X) 
     return y;
 
   std::vector<std::string> row = _rows[index]->GetData();
   std::transform(row.begin() + _xOffset, row.end(),
-  std::back_inserter(y), [](const std::string& str)
-  { return std::stoi(str); });
+  std::back_inserter(y), [](const std::string& str) { return std::stoi(str); });
   return y;
 }
-
 /**
  * Returns Y values for plotting as std::string.
  *
  * Returns a vector of std::string to be used as Y values in plotting.
  * 
- * @tparam T The type of EntityData class stored in EntityDataCsv.
  * @param index Row index used in retrieving applicable row data.
- * @return y Vector of <T2> to be used as Y values in plotting.
+ * @return y Vector of <std::string> to be used as Y values in plotting.
  */
-template <class T>
-std::vector<std::string> EntityDataCsv<T>::GetY(int index)
+std::vector<std::string> EntityDataCsv::GetYAsString(const int index)
 {
   if(!_xOffset)
   {
@@ -155,7 +164,7 @@ std::vector<std::string> EntityDataCsv<T>::GetY(int index)
   }
 
   if(index  == _ROW_NUMBER_X) 
-    return GetX<std::string>();
+    return GetXAsString();
 
   std::vector<std::string> row = _rows[index]->GetData();
   return std::vector<std::string>(row.begin() + _xOffset, row.end());

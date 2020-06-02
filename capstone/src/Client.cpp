@@ -17,7 +17,7 @@ HttpClient::HttpClient(std::string host, int port): _host(host), _port(port), _c
  * @return res-body Body of returned response by the server.
  * @throws std::runtime_error if the returned status code is not 200 (success).
  */
-std::string HttpClient::Get(std::string uri)
+std::string HttpClient::Get(const std::string uri)
 {
   auto res = _client.Get(uri.c_str());
 

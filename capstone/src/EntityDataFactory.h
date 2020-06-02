@@ -17,9 +17,7 @@ class EntityDataFactory
     // We don't want factory instance to be copied
     EntityDataFactory(EntityDataFactory const&) = delete;
     void operator=(EntityDataFactory const&) = delete;
-    template <class T>
-    std::shared_ptr<T> CreateData(const std::string &data)
-    { return std::make_shared<T>(data); };
+    std::shared_ptr<EntityData> CreateData(const CsvType type, const std::string &data);
   private:
     EntityDataFactory() {};
 };

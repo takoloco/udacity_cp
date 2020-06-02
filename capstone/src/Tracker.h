@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "Client.h"
-#include "EntityData.h"
 #include "Plotter.h"
 
 /**
@@ -17,17 +16,15 @@ class Tracker
 {
 public:
   Tracker();
-  template <typename T>
-  std::shared_ptr<EntityDataCsv<T>> GetData(CsvType csv_type);
-  template <typename T2>
-  void PlotData(CsvType csv_type, std::vector<int> display_rows,
-  int row_num, int column_num, int index);
+  std::shared_ptr<EntityDataCsv> GetData(const CsvType csv_type);
+  void PlotData(std::vector<std::shared_ptr<EntityDataCsv>> csvs, 
+  std::vector<std::vector<int>> display_rows, int row_num,
+  int column_num);
   void Run();
 private:
   HttpClient _client;
+  std::vector<std::shared_ptr<EntityDataCsv>> _csvs;
   std::unique_ptr<Plotter> _plotter;
 };
-
-#include "Tracker.tpp"
 
 #endif
