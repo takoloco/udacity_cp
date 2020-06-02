@@ -2,17 +2,33 @@
 
 ## Overview
 
-This application retrieves latest COVID-19 confirmed cases and deaths timeseries data published by John Hopkins
-University and plots them using
-[Matplotlib](https://github.com/lava/matplotlib-cpp).
+COVID-19 Tracker is a C++ application that retrieves latest COVID-19 confirmed cases and deaths timeseries data published by [John Hopkins University](https://github.com/CSSEGISandData/COVID-19) and plots them using [Matplotlib](https://github.com/lava/matplotlib-cpp).
 
 ## Design
 
+### Class Diagram
 
+COVID-19 Tracker consists of 6 main entities and 1 Utility class.
+
+* Tracker - Main class that kicks off the application
+* EntityData - Data class that contains data for an geographical entity (i.e. country for Global, county for USA) represeted as a single row in JHU CSV files.
+* EntityDataCsv - Class that represents an entire CSV JHU file that has a vector of corresponding `EntityData` instances which represent rows of the CSV file.
+* EntityDataFactory - Factory class that produces instances of `EntityData`.
+* HttpClient - Wrapper class around [cpp-httplib](https://github.com/yhirose/cpp-httplib) used to communicate with HTTP servers.
+* Plotter - Class that implements plotting logic using C++ adaptation of [matplotlib-cpp](https://github.com/lava/matplotlib-cpp).
+* Utility - Utility class that implements utility methods used across different classes in COVID-19 Tracker.
+
+![Diagram](https://raw.githubusercontent.com/takoloco/udacity_cp/master/images/20200602_diagram_class_covid-tracker_01.png)
+
+### Execution Flow
+
+COVID-19 Tracker consists of 6 main entities and 1 Utility class. The main class `Tracker` kicks off its data ingestion class by sending HTTP requests to JHU's GitHub repo via `HttpClient` class. The returned data is then processed into `EntityDataCsv` objects each of which has an vector of pointers to `EntityData` objects instantiated by the `EntityDataFactory` Singleton instance. Finally, the `Plotter` class instance plots the data stored in the `EntityCsvData` objects.
+
+![Diagram](https://raw.githubusercontent.com/takoloco/udacity_cp/master/images/20200602_diagram_sequence_covid-tracker_01.png)
 
 ## Installation
 
-The following steps have been verified with Ubuntu 16.04.
+The following steps have been tested and verified with Ubuntu 16.04.
 
 ### Clone repos 
 
