@@ -24,7 +24,7 @@ const CsvType type, const std::string &data)
  *
  * @return instance Singleton instance of EntityDataFactory.
  */
-EntityDataFactory& EntityDataFactory::getInstance()
+EntityDataFactory& EntityDataFactory::GetInstance()
 {
   static EntityDataFactory instance;
   return instance;

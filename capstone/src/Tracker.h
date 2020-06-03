@@ -17,9 +17,9 @@ class Tracker
 public:
   Tracker();
   std::shared_ptr<EntityDataCsv> GetData(const CsvType csv_type);
-  void PlotData(std::vector<std::shared_ptr<EntityDataCsv>> csvs, 
-  std::vector<std::vector<int>> display_rows, int row_num,
-  int column_num);
+  void PlotData(const std::vector<std::shared_ptr<EntityDataCsv>> &csvs, 
+  const std::vector<std::vector<int>> &display_rows, const int row_num,
+  const int column_num);
   void Run();
 private:
   HttpClient _client;

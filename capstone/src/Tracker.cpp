@@ -67,7 +67,7 @@ std::shared_ptr<EntityDataCsv> Tracker::GetData(const CsvType csv_type)
 
   // Process response
   std::unique_ptr<EntityDataFactory> factory;
-  factory->getInstance();
+  factory->GetInstance();
   while(std::getline(csv, line, '\n')) {
     auto data = factory->CreateData(csv_type, line);
     lines.push_back(data);
@@ -86,8 +86,9 @@ std::shared_ptr<EntityDataCsv> Tracker::GetData(const CsvType csv_type)
  * @param row_num Number of total rows of subplots to be plotted.
  * @param column_num Number of total columns of subplots to be plotted.
  */
-void Tracker::PlotData(std::vector<std::shared_ptr<EntityDataCsv>> csvs,
-std::vector<std::vector<int>> display_rows, int row_num, int column_num)
+void Tracker::PlotData(const std::vector<std::shared_ptr<EntityDataCsv>> &csvs,
+const std::vector<std::vector<int>> &display_rows, const int row_num,
+const int column_num)
 {
   _plotter->Plot(csvs, display_rows, row_num, column_num);
 }
