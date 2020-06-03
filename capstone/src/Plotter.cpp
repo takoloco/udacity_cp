@@ -63,8 +63,9 @@ void Plotter::SetSuperTitle(const std::string title)
   plt::suptitle(title);
 }
 
-void Plotter::Plot(std::vector<std::shared_ptr<EntityDataCsv>> csvs,
-std::vector<std::vector<int>> rows, int row_num, int column_num)
+void Plotter::Plot(const std::vector<std::shared_ptr<EntityDataCsv>> &csvs,
+const std::vector<std::vector<int>> &rows, const int row_num,
+const int column_num)
 {
   int index = 0;
   for(std::shared_ptr<EntityDataCsv> data : csvs)

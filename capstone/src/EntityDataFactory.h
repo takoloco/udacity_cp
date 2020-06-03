@@ -13,7 +13,7 @@
 class EntityDataFactory
 {
   public:
-    static EntityDataFactory& getInstance();
+    static EntityDataFactory& GetInstance();
     // We don't want factory instance to be copied
     EntityDataFactory(EntityDataFactory const&) = delete;
     void operator=(EntityDataFactory const&) = delete;

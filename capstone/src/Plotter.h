@@ -19,8 +19,9 @@ class Plotter
     void SetSuperTitle(const std::string title);
     void SetSubPlotPosition(const int row_num, const int column_num,
     const int index);
-    void Plot(std::vector<std::shared_ptr<EntityDataCsv>> csvs,
-    std::vector<std::vector<int>> rows, int row_num, int column_num);
+    void Plot(const std::vector<std::shared_ptr<EntityDataCsv>> &csvs,
+    const std::vector<std::vector<int>> &rows, const int row_num,
+    const int column_num);
   private:
 };
 

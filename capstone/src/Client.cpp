@@ -5,7 +5,8 @@
 
 #include "Client.h"
 
-HttpClient::HttpClient(std::string host, int port): _host(host), _port(port), _client(host, port) {}
+HttpClient::HttpClient(const std::string host, const int port): _host(host),
+_port(port), _client(host, port) {}
 
 /**
  * Given a URI, queries it via GET and returns response body.

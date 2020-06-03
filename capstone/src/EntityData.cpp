@@ -8,6 +8,20 @@
 #include "EntityData.h"
 #include "Util.h"
 
+EntityData::EntityData(const CsvType type, const std::string &data)
+:_type(type), _raw_data(data)
+{
+  std::vector<std::string> rows;
+  Util::Tokenize(data, rows, ",");
+  _data = rows;
+  if(type == CsvType::JHU_USA_CONFIRMED || type == CsvType::JHU_USA_DEATHS)
+  {
+    _name = rows[5] + ", " + rows[6];
+  } else {
+    _name = rows[0];
+  }
+}
+
 EntityDataCsv::EntityDataCsv(const CsvType type) : _type(type)
 {
   SetChartParameters(_type);

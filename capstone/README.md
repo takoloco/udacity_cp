@@ -158,7 +158,14 @@ sudo apt install python-numpy
 |The project demonstrates an understanding of C++ functions and control structures.|Various control structures such as if statements, switch statements and for/while loops are used throughout the project.|
 |The project uses Object Oriented Programming techniques.|The project consists of 7 class entities as seen in the above entity relationship diagram.|
 |Classes use appropriate access specifiers for class members.|The methods and variables defined in the classes in the project are assigned appropriate access specifiers.|
-|All class members that are set to argument values are initialized through member initialization lists.|Classes such as HttpClient, EntityData and EntityDataCsv use member initialization lists in initializing their variables.|
-|Classes encapsulate behavior.|Classes are designed around data entities such as CSV file (EntityDataCsv) and its rows (EntityData). The classes have getters/setters through which users access the data.|
-|The project uses smart pointers instead of raw pointers.|Classes such as Tracker and EntityDataCsv uses shared pointers.|
+|All class members that are set to argument values are initialized through
+member initialization lists.|Classes such as `HttpClient`, `EntityData` and
+`EntityDataCsv` use member initialization lists in initializing their variables.|
+|Classes encapsulate behavior.|Classes are designed around data entities such as
+|At least two variables are defined as references, or two functions use
+pass-by-reference in the project code.|`Plotter::Plot` and `Tracker::PlotData` use
+pass-by-reference.|
+|The project uses smart pointers instead of raw pointers.|Classes such as
+`Tracker` and `EntityDataCsv`:w
+uses shared pointers.|
 |The project uses multithreading.|The Tracker classes uses `std::async` in kicking off CSV data downloads in concurrent fashion.|
