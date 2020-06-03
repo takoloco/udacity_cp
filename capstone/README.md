@@ -161,5 +161,5 @@ sudo apt install python-numpy
 |All class members that are set to argument values are initialized through member initialization lists.|Classes such as `HttpClient`, `EntityData` and `EntityDataCsv` use member initialization lists in initializing their variables.|
 |Classes encapsulate behavior.|Classes are designed around data entities such as `EntityDataCsv` which represents a CSV file published by JHU and `EntityData` which represents a row in a CSV file. Classes implements getters/setters for users to use in accsssing state.
 |At least two variables are defined as references, or two functions use pass-by-reference in the project code.|`Plotter::Plot` and `Tracker::PlotData` use pass-by-reference.|
-|The project uses smart pointers instead of raw pointers.|Classes such as `Tracker` and `EntityDataCsv` use shared pointers.|
+|The project uses smart pointers instead of raw pointers.|Classes such as `Tracker` and `EntityDataCsv`:w uses shared pointers.|
 |The project uses multithreading.|The Tracker classes uses `std::async` in kicking off CSV data downloads in concurrent fashion.|
