@@ -110,6 +110,9 @@ Build the project!
 ```
 make
 ```
+
+See the Troubleshooting section below if you run into issues at the `cmake` or `make` steps.
+
 ### Execution
 
 From the `build` directory, run the following command
@@ -123,6 +126,8 @@ You should see 4 charts in total as below:
 ![Charts](https://raw.githubusercontent.com/takoloco/udacity_cp/master/images/capstone/20200602_scr_covid-tracker_01.png)
 
 ### Troubleshooting
+
+#### numpy error
 
 If the system tells you that you already have `numpy` installed but `cmake`
 fails to recognize it, you may need to remove `numpy` and try installing again
@@ -138,6 +143,27 @@ Once the pakcages have been removed, try installing again.
 
 ```
 sudo apt install python-numpy
+```
+
+#### Compilation error
+
+You may encounter below compilation errors at `static_assert` checks in `matplotlibcpp.h`.
+
+```
+/home/tako/matplotlib-cpp/matplotlibcpp.h:305:37: error: expected ‘,’ before ‘)’ token
+ static_assert(sizeof(long long) == 8);                                  ^
+/home/tako/matplotlib-cpp/matplotlibcpp.h:305:37: error: expected string-literal before ‘)’ token
+/home/tako/matplotlib-cpp/matplotlibcpp.h:307:46: error: expected ‘,’ before ‘)’ token
+ static_assert(sizeof(unsigned long long) == 8);
+```
+
+If this happens, comment out lines 305 and 307 in matplotlib-cpp/matplotlibcpp.h or modify the lines as below.
+
+
+```
+static_assert(sizeof(long long) == 8, “”);
+--
+static_assert(sizeof(unsigned long long) == 8, “”);
 ```
 
 ## Rubric Points
